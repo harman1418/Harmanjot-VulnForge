@@ -1,0 +1,77 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { ThemeProvider } from './context/ThemeContext'
+import PageTransition from './components/PageTransition'
+import Landing        from './pages/Landing'
+import Login          from './pages/Login'
+import Register       from './pages/Register'
+import VerifyOTP      from './pages/VerifyOTP'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword  from './pages/ResetPassword'
+import Dashboard      from './pages/Dashboard'
+import Targets        from './pages/Targets'
+import Scans          from './pages/Scans'
+import ScanReport     from './pages/ScanReport'
+import ToolsPage      from './pages/ToolsPage'
+import ToolRunner     from './pages/ToolRunner'
+import CryptoLab      from './pages/CryptoLab'
+import './index.css'
+
+function PublicRoute({ children }) {
+  const user = JSON.parse(localStorage.getItem('vulnforge_user') || 'null')
+  const token = localStorage.getItem('token')
+  console.log('PublicRoute:', { hasUser: !!user, hasToken: !!token })
+  return (user && token) ? <Navigate to="/dashboard" replace /> : children
+}
+
+function ProtectedRoute({ children }) {
+  const user = JSON.parse(localStorage.getItem('vulnforge_user') || 'null')
+  const token = localStorage.getItem('token')
+  console.log('ProtectedRoute:', { hasUser: !!user, hasToken: !!token })
+  
+  if (!user || !token) {
+    console.warn('Auth missing, redirecting to login...')
+    localStorage.removeItem('vulnforge_user')
+    localStorage.removeItem('token')
+    return <Navigate to="/login" replace />
+  }
+  return children
+}
+
+function AnimatedRoutes() {
+  return (
+    <PageTransition>
+      <Routes>
+        {/* Public */}
+        <Route path="/"                element={<PublicRoute><Landing /></PublicRoute>} />
+        <Route path="/login"           element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/register"        element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/verify-otp"      element={<VerifyOTP />} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password"  element={<ResetPassword />} />
+
+        {/* Protected */}
+        <Route path="/dashboard"       element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/targets"         element={<ProtectedRoute><Targets /></ProtectedRoute>} />
+        <Route path="/scans"           element={<ProtectedRoute><Scans /></ProtectedRoute>} />
+        <Route path="/scans/:id"       element={<ProtectedRoute><ScanReport /></ProtectedRoute>} />
+
+        {/* Tools */}
+        <Route path="/tools"           element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
+        <Route path="/tools/:toolId"   element={<ProtectedRoute><ToolRunner /></ProtectedRoute>} />
+        <Route path="/crypto"          element={<ProtectedRoute><CryptoLab /></ProtectedRoute>} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </PageTransition>
+  )
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <BrowserRouter>
+        <AnimatedRoutes />
+      </BrowserRouter>
+    </ThemeProvider>
+  )
+}
