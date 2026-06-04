@@ -12,9 +12,9 @@
 ## Evaluation Resources
 
 ### 1. Video Demonstration
-Please watch `01_VulnForge_Live_Demo.mp4` for a complete walkthrough of the UI, authentication, scanning capabilities, and backend server proof. 
+Please watch the full video demonstration of the project on YouTube for a complete walkthrough of the UI, authentication, scanning capabilities, and backend server proof:
 
-*(Note: Due to GitHub's file size limits, the video file may be provided separately via Google Drive or YouTube link if you are viewing this on GitHub).*
+👉 **[Click here to watch the Live Demonstration on YouTube](https://youtu.be/LHP7iZg8o74)**
 
 ### 2. Live Project Links
 - **Frontend Application:** [https://vulnforge.app](https://vulnforge.app)
